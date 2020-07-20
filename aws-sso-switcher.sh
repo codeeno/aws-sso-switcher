@@ -100,7 +100,7 @@ function updateConfig() {
   local new_config=$(jq \
     --arg profile "$profile" \
     --arg newAccessToken "$1" \
-    --arg newAccessTokenExpiry "$(date +%s --date="$2 seconds")" \
+    --arg newAccessTokenExpiry "$(date -v +$2S +%s)" \
     '.[$profile].accessToken=$newAccessToken | .[$profile].accessTokenExpiry=$newAccessTokenExpiry' \
     $config_path)
   echo "$new_config" > $config_path
