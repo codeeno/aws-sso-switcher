@@ -130,7 +130,7 @@ function refreshAccessToken() {
 
   printf "Register Client...\n"
   read client_id client_secret < <(echo $( \
-    aws2 sso-oidc register-client \
+    aws sso-oidc register-client \
     --client-name $(hostname) \
     --client-type public \
     --region $region \
@@ -138,7 +138,7 @@ function refreshAccessToken() {
 
   printf "Start Device Authorization...\n"
   read device_code verification_uri_complete < <(echo $( \
-    aws2 sso-oidc start-device-authorization \
+    aws sso-oidc start-device-authorization \
     --client-id $client_id \
     --client-secret $client_secret \
     --start-url $start_url \
@@ -155,7 +155,7 @@ Once done, press [Enter]\n\n\
 
   printf "Requesting Access Token...\n"
   read access_token access_token_expiry < <(echo $( \
-    aws2 sso-oidc create-token \
+    aws sso-oidc create-token \
     --client-id $client_id \
     --client-secret $client_secret \
     --grant-type 'urn:ietf:params:oauth:grant-type:device_code' \
@@ -169,19 +169,19 @@ Once done, press [Enter]\n\n\
 function getCredentials() {
   printf "Acquiring Credentials...\n"
 
-  account_list=$(aws2 sso list-accounts \
+  account_list=$(aws sso list-accounts \
    --access-token $access_token \
    --region $region)
   account_name=$(echo $account_list | jq '.accountList[]' | jq -r '.accountName' | fzf)
   account_id=$(echo $account_list | jq -r ".accountList[] | select(.accountName==\"$account_name\") | .accountId")
 
-  roles_list=$(aws2 sso list-account-roles \
+  roles_list=$(aws sso list-account-roles \
     --access-token $access_token \
     --account-id $account_id \
     --region $region)
   role_name=$(echo $roles_list | jq '.roleList[]' | jq -r '.roleName' | fzf)
 
-  credentials=$(aws2 sso get-role-credentials \
+  credentials=$(aws sso get-role-credentials \
     --access-token $access_token \
     --role-name $role_name \
     --account-id $account_id \
