@@ -1,3 +1,5 @@
+# Stop!
+**This script has been re-implemented using Javascript, making it a lot less error-prone. You can find it [HERE](https://github.com/codeeno/aws-sso-cli).**
 # aws-sso-switcher
 Script for on-the-fly switching between temporary AWS credentials through AWS SSO.
 
